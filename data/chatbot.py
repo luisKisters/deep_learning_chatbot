@@ -63,14 +63,14 @@ def write_vars():
     training = np.array(training)
     output = np.array(output)
 
-    with open("data.pickle", "wb") as f:
+    with open("./encoded_text/data.pickle", "wb") as f:
         pickle.dump((words, labels, training, output), f)    
 
-with open("psycho.json") as file:
+with open("./datasets/intents.json") as file:
     data = json.load(file)
 
 try:
-    with open("data.pickle", "rb") as f:
+    with open("./encoded_text/data.pickle", "rb") as f:
         words, labels, training, output = pickle.load(f)
 except:
     write_vars()
@@ -87,7 +87,7 @@ net = tflearn.regression(net)
 model = tflearn.DNN(net)
 
 def reload_vars():
-    os.remove("data.pickle")
+    os.remove("./encoded_text/data.pickle")
     write_vars()
 
 def train_model():
@@ -97,7 +97,7 @@ def train_model():
     # tbCallBack = tensorflow.keras.callbacks.TensorBoard(log_dir='./logs/', histogram_freq=0, write_graph=True, write_images=True)
     reload_vars()
     model.fit(training, output, n_epoch=1000, batch_size=8, show_metric=True)
-    model.save("model.tflearn")
+    model.save("./model/model.tflearn")
 
 def bag_of_words(s,words):
     bag = [0 for _ in range(len(words))]
