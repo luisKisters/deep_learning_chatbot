@@ -5,6 +5,9 @@ import torch
 import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
 
+from model.model import NeuralNet
+
+
 with open('./datasets/intents.json', 'r') as f:
     intents = json.load(f)
     
@@ -25,7 +28,6 @@ all_words = [stem(w) for w in all_words if w not in ignore_words] # STEMMING
 all_words = sorted(set(all_words)) # SET WILL REMOVE DUPLICATES
 tags = sorted(set(tags)) # SET WILL REMOVE DUPLICATES
 
-print(tags)
 X_train = []
 y_train = []
 
@@ -46,18 +48,21 @@ class ChatDataset(Dataset):
         self.y_data = y_train
         
     def __getitem__(self, index):
-        return self.X_data[idx], self.y_data[idx]
+        return self.X_data[index], self.y_data[index]
     
     def __len__(self):
         return self.n_samples
     
-    
-
 # HYPERPARAMETERS
 batch_size = 8
 num_workers = 2
+hidden_size = 8
+output_size = len(tags)
+input_size = len(X_train[0])
+
 
 dataset = ChatDataset()
 train_loader = DataLoader(dataset=dataset, batch_size=batch_size, shuffle=True, num_workers=num_workers)
-    
+
+model = NeuralNet(input_size, hidden_size, output_size)
     
