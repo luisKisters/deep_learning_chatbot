@@ -1,3 +1,4 @@
 - add ui
 - implement voice recognition'
-- add callback
+- add callback 
+    - propably make an own callback visualization with matplotlib 
