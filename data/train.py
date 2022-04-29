@@ -31,28 +31,32 @@ tags = sorted(set(tags)) # SET WILL REMOVE DUPLICATES
 X_train = []
 y_train = []
 
-for (pattern_sentence) in xy:
+for (pattern_sentence, tag) in xy:
+    # X: bag of words for each pattern_sentence
     bag = bag_of_words(pattern_sentence, all_words)
     X_train.append(bag)
-    
+    # y: PyTorch CrossEntropyLoss needs only class labels, not one-hot
     label = tags.index(tag)
-    y_train.append(label) # CrossEntropyLoss
-    
+    y_train.append(label)
+
 X_train = np.array(X_train)
 y_train = np.array(y_train)
 
 class ChatDataset(Dataset):
+    
     def __init__(self):
         self.n_samples = len(X_train)
-        self.X_data = X_train
+        self.x_data = X_train
         self.y_data = y_train
-        
+
+    # support indexing such that dataset[i] can be used to get i-th sample
     def __getitem__(self, index):
-        return self.X_data[index], self.y_data[index]
-    
+        return self.x_data[index], self.y_data[index]
+
+    # we can call len(dataset) to return the size
     def __len__(self):
         return self.n_samples
-    
+ 
 # HYPERPARAMETERS
 batch_size = 8
 num_workers = 2
