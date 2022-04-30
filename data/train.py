@@ -86,7 +86,7 @@ if __name__ == '__main__':
     # learning_rate = 0.001
     # num_epochs = 1000
     
-    num_workers = 0 # LEAVE THIS ON 0 IF YOU ARE ON WINDOWS, ON LINUX 2 OR STH MIGHT WORK
+    num_workers = 0 # LEAVE THIS ON 0 IF YOU ARE ON WINDOWS, ON LINUX 2 OR STH MIGHT WRK
     num_epochs = 1000
     batch_size = 8
     learning_rate = 0.001
