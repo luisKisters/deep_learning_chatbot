@@ -78,13 +78,22 @@ if __name__ == '__main__':
             return self.n_samples
     
     # HYPERPARAMETERS
+    # batch_size = 8
+    # num_workers = 0
+    # hidden_size = 8
+    # output_size = len(tags)
+    # input_size = len(X_train[0])
+    # learning_rate = 0.001
+    # num_epochs = 1000
+    
+    num_workers = 0 # LEAVE THIS ON 0 IF YOU ARE ON WINDOWS, ON LINUX 2 OR STH MIGHT WORK
+    num_epochs = 1000
     batch_size = 8
-    num_workers = 0
+    learning_rate = 0.001
+    input_size = len(X_train[0])
     hidden_size = 8
     output_size = len(tags)
-    input_size = len(X_train[0])
-    learning_rate = 0.001
-    num_epochs = 10000
+    print(input_size, output_size)
 
     # OTHER STUFF
     epoch_display_rate = 100
@@ -144,5 +153,19 @@ if __name__ == '__main__':
 
     os.remove("./model/log/log.txt")
     os.system("echo 1,1 >> model/log/log.txt")
-    print(f'final loss={loss.item():.10f}')
-            
+    # print(f'final loss={loss.item():.10f}')
+    
+    data = {
+        "model_state": model.state_dict(),
+        "input_size": input_size,
+        "output_size": output_size,
+        "hidden_size": hidden_size,
+        "all_words": all_words,
+        "tags": tags
+    }
+    
+    FILE = "model/data.pth"
+    torch.save(data, FILE)
+    
+    os.system("cls")
+    print(f'training complete final loss={loss.item():.10f}, file saved as {FILE}')
