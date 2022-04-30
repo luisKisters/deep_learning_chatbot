@@ -1,4 +1,5 @@
 import json
+import time
 import numpy as np
 from nltk_utils import tokenize, stem, bag_of_words
 import torch
@@ -6,36 +7,30 @@ import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
 import os
 from model.model import NeuralNet
-# IMPORT CALLBACK FROM BS3
-from stable_baselines3.common.callbacks import BaseCallback
+import threading
 
 
 
 if __name__ == '__main__':
-    # freeze_support()
+    try:
+        os.system("echo 1,1 >> model/log/log.txt")    
+        os.remove("model/log/log.txt")    
+    except:
+        os.system("echo 1,1 >> model/log/log.txt")    
+        os.remove("model/log/log.txt") 
+    os.system("echo 1,1 >> model/log/log.txt")
     
-    
-    
-    # class TrainAndLoggingCallback(BaseCallback):
-        
-    #     def __init__(self, check_freq, save_path, verbose=1):
-    #         super(TrainAndLoggingCallback, self).__init__(verbose)
-    #         self.check_freq = check_freq
-    #         self.save_path = save_path
-
-    #     def _init_callback(self):
-    #         if self.save_path is not None:
-    #             os.makedirs(self.save_path, exist_ok=True)
-
-    #         return True
-        
-    # CHECKPOINT_DIR = './train/train_basic'
-    # LOG_DIR = './logs/'
-    
-     
+    # OPEN CHATBOT DATASET JSON FILE
     with open('./datasets/intents.json', 'r') as f:
         intents = json.load(f)
         
+    # DEFINE THE FUNC STARTS THE PY FILE THAT VISUALIZES THE TRAINING 
+    def start_training_visualization():
+        os.system("python model/monitor.py")
+              
+    # DEFINE THE THREAD THAT OPENS THE PY FILE THAT VISUALIZES THE TRAINING PROCESS
+    visualiztion_thread = threading.Thread(target=start_training_visualization)    
+    
     all_words = []
     tags = [] 
     xy = [] # THIS LIST WILL CONTAIN THE PATTERNS AND TAGS
@@ -105,6 +100,20 @@ if __name__ == '__main__':
     criterion = nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 
+    try:
+        os.system("echo 1,1 >> model/log/log.txt")    
+        os.remove("model/log/log.txt")    
+    except:
+        os.system("echo 1,1 >> model/log/log.txt")    
+        os.remove("model/log/log.txt") 
+    
+    os.system("echo 1,1 >> model/log/log.txt")
+    # os.system("cls")
+    
+    print("started training monitor")
+    visualiztion_thread.start()
+    time.sleep(3)
+    
     # TRAINING LOOP
     for epoch in range(num_epochs):
         for (words, labels) in train_loader:
@@ -123,7 +132,17 @@ if __name__ == '__main__':
             optimizer.step()
             
         if (epoch +1) % epoch_display_rate == 0:
-            print(f'epoch={epoch+1}/{num_epochs}, loss={loss.item():.10f} ')
+            # os.system("cls")
+            
+            print(f'epoch={epoch+1}/{num_epochs}, learning_rate={learning_rate} loss={loss.item():.20f} ')
+            # learning_rate += 0.0001
+            file = open("./model/log/log.txt","a")
+            # output_loss = float(format(round(loss.item(), 10),"10f"))
+            output = str(epoch) +  "," + str(format(loss.item(), "10f")) + "\n"
+            file.write(output)
+            file.close()
 
-    print(f'final loss={loss.item():.10f} ')
+    os.remove("./model/log/log.txt")
+    os.system("echo 1,1 >> model/log/log.txt")
+    print(f'final loss={loss.item():.10f}')
             
